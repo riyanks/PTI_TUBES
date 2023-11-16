@@ -8,7 +8,7 @@ import { useSelectedLayoutSegment } from 'next/navigation';
 import useScroll from '@/hooks/use-scroll';
 import { cn } from '@/utils/utils';
 import Image from 'next/image';
-import Navbar from '../Navbar';
+import Navbar from '../ui/Navbar';
 
 const Header = () => {
     const scrolled = useScroll(5);

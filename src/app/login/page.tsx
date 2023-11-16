@@ -1,7 +1,7 @@
 "use client";
-import { Input } from "@/components/input"
-import { Label } from "@/components/label"
-import { Button } from "@/components/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image"

@@ -3,6 +3,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
 
 const Register = () => {
   const [error, setError] = useState("");
@@ -64,22 +68,35 @@ const Register = () => {
 
   return (
     sessionStatus !== "authenticated" && (
-      <div className="flex min-h-screen flex-col items-center justify-between p-24">
-        <div className="bg-[#212121] p-8 rounded shadow-md w-96">
-          <h1 className="text-4xl text-center font-semibold mb-8">Register</h1>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
-              placeholder="Email"
-              required
-            />
-            <input
-              type="password"
-              className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:outline-none focus:border-blue-400 focus:text-black"
-              placeholder="Password"
-              required
-            />
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="relative flex flex-col m-6 space-y-10 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+        <div className="flex flex-col justify-center p-6 md:p-14">
+            <span className="mb-3 text-4xl font-bold">Daftar</span>
+            <span className="font-medium text-gray-400 mb-8">
+                Masukkan Username dan Password !
+            </span>
+            <form onSubmit={handleSubmit}>
+                <div className="py-2">
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="name">Email</Label>
+                        <Input
+                            type="name"
+                            placeholder="Masukkan Email"
+                        />
+                    </div>
+                </div>
+                <div className="py-4">
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                         
+                            type="password"
+            
+                            placeholder="Password"
+                        />
+                    </div>
+                </div>
+
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
@@ -89,14 +106,20 @@ const Register = () => {
             </button>
             <p className="text-red-600 text-[16px] mb-4">{error && error}</p>
           </form>
-          <div className="text-center text-gray-500 mt-4">- OR -</div>
-          <Link
-            className="block text-center text-blue-500 hover:underline mt-2"
-            href="/login"
-          >
-            Login with an existing account
-          </Link>
-        </div>
+          <Link className="text-sm mt-3 text-right" href={"/"}>
+                        Sudah memiliki akun? <span className="font-bold">Login</span>
+                    </Link>
+            </div>
+                    <div className="relative">
+                    <Image
+                        src="/image/login-page.jpg"
+                        alt="login-page"
+                        className="w-[500px] h-[800px] hidden rounded-r-2xl md:block object-cover"
+                        width={600}
+                        height={600}
+                    />
+              </div>
+      </div>
       </div>
     )
   );

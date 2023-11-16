@@ -1,7 +1,7 @@
 import React from "react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/ui/Navbar";
 
 const Dashboard = async () => {
   const session = await getServerSession();
