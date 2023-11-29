@@ -57,6 +57,60 @@ const SensorDataStatus: React.FC<SensorDataProps> = ({ sensorType, endpoint }) =
   const componentRef = useRef<HTMLDivElement>(null)
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [selectedExportType, setSelectedExportType] = useState('')
+  const [sortColumn, setSortColumn] = useState<string>('No.');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10; // Jumlah item per halaman
+
+  const countOn = data ? data.filter(item => item.Status === 'ON').length : 0;
+  const countOff = data ? data.filter(item => item.Status === 'OFF').length : 0;
+  const countGap = data ? data.filter(item => item.Status === 'GAP').length : 0;
+
+
+  // Calculate the total count
+  const totalCount = data ? data.length : 0;
+
+  // Calculate the percentages
+  const percentageOn = (countOn / totalCount) * 100;
+  const percentageOff = (countOff / totalCount) * 100;
+  const percentageGap = (countGap / totalCount) * 100;
+
+  // Use the percentages to generate data for the DonutChart
+  const donutChartData = [
+    { name: 'ON', userScore: percentageOn },
+    { name: 'OFF', userScore: percentageOff },
+    { name: 'GAP', userScore: percentageGap },
+  ];
+  const handleSort = (columnName: string) => {
+    if (columnName === sortColumn) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(columnName);
+      setSortOrder('asc');
+    }
+  };
+
+  // Sort data based on the current sort column and order
+  const sortedData = data
+    ? [...data].sort((a, b) => {
+        const valueA = a[sortColumn];
+        const valueB = b[sortColumn];
+
+        if (sortOrder === 'asc') {
+          return valueA > valueB ? 1 : -1;
+        } else {
+          return valueA < valueB ? 1 : -1;
+        }
+      })
+    : null;
+      // Paginate data
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = data ? data.slice(indexOfFirstItem, indexOfLastItem) : null;
+
+    // Change page
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
 
   const buttonExport = [
     { title: 'CSV', icon: <FileIcon />, export: () => ExportToCsv(data, 'sensor_data.csv'), style: 'gap-3 bg-green-400 hover:bg-green-600' },
@@ -112,48 +166,58 @@ const SensorDataStatus: React.FC<SensorDataProps> = ({ sensorType, endpoint }) =
               </div>
               <div className="flex flex-row justify-between">
                 
-                  <div className="rounded-md border my-3" ref={componentRef}>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>No.</TableHead>
-                          {data && Object.keys(data[0]).map((header, index) => (
-                            <TableHead key={index}>{header}</TableHead>
-                          ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {data.map((row, rowIndex) => (
-                          <TableRow key={rowIndex}>
-                            <TableCell>{rowIndex + 1}</TableCell>
-                            {Object.values(row).map((cell, cellIndex) => (
-                              <TableCell key={cellIndex}>{String(cell)}</TableCell>
-                            ))}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+              <div className="rounded-md border my-3">
+      <table>
+        <thead>
+          <tr>
+            <th onClick={() => handleSort('No.')}>
+              No. {sortColumn === 'No.' && sortOrder === 'asc' ? '▲' : '▼'}
+            </th>
+            <th onClick={() => handleSort('Last Data')}>
+              Last Data {sortColumn === 'Last Data' && sortOrder === 'asc' ? '▲' : '▼'}
+            </th>
+            <th onClick={() => handleSort('Sensor')}>
+              Sensor {sortColumn === 'Sensor' && sortOrder === 'asc' ? '▲' : '▼'}
+            </th>
+            <th onClick={() => handleSort('Status')}>
+              Status {sortColumn === 'Status' && sortOrder === 'asc' ? '▲' : '▼'}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentItems &&
+            currentItems.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                <td>{rowIndex + 1 + indexOfFirstItem}</td>
+                {Object.values(row).map((cell, cellIndex) => (
+                  <td key={cellIndex}>{String(cell)}</td>
+                ))}
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
+      {/* Render pagination buttons */}
+      <div>
+        {data &&
+          Array.from({ length: Math.ceil(data.length / itemsPerPage) }).map((_, index) => (
+            <button key={index} onClick={() => paginate(index + 1)}>
+              {index + 1}
+            </button>
+          ))}
+      </div>
+    </div>
                     <div className='w-full h-screen rounded-lg flex flex-row space-x-4 p-4'>
                   <div className="border-dashed border border-zinc-500 w-full h-40 rounded-lg">
                   <Card className="max-w-lg mb-6 light-tremor">
                     <Title>Status</Title>
                     <DonutChart
                       className="mt-6 mb-6"
-                      data={[
-                        {
-                          name: 'ON',
-                          userScore: dataBarbie.vote_average,
-                        },
-                        {
-                          name: 'OFF',
-                          userScore: 10 - dataBarbie.vote_average,
-                        }
-                      ]}
+                      data= {donutChartData}
                       category="userScore"
                       index="name"
-                      colors={["green", "slate"]}
-                      label={`${(dataBarbie.vote_average * 10).toFixed()}%`}
+                      colors={["green", "slate", "yellow"]} 
+                      label={`${percentageOn.toFixed()}%`}
                     />
                   </Card>
                           </div>
