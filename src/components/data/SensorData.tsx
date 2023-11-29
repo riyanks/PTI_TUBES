@@ -34,6 +34,10 @@ const SensorData: React.FC<SensorDataProps> = ({ sensorType, endpoint }) => {
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
   const [selectedExportType, setSelectedExportType] = useState('')
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+
+
   const buttonExport = [
     { title: 'CSV', icon: <FileIcon />, export: () => ExportToCsv(data, 'sensor_data.csv'), style: 'gap-3 bg-green-400 hover:bg-green-600' },
     { title: 'Excel', icon: <TableIcon />, export: () => ExportToExcel(data, 'sensor_data.xlsx'), style: 'gap-3 bg-green-700 hover:bg-green-900' },
@@ -57,10 +61,19 @@ const SensorData: React.FC<SensorDataProps> = ({ sensorType, endpoint }) => {
     fetchData()
   }, [endpoint])
 
+  const filteredData = data
+    ? data.filter((row) =>
+      Object.values(row).some(
+        (value) =>
+          String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
+    : [];
+
 
   return (
     <>
-      <h1 className="text-7xl p-4 mb-6 font-bold text-center scroll-m-20 border-b tracking-tight first:mt-0">{`Sensor ${sensorType}`}</h1>
+      <h1 className="text-5xl p-4 mb-6 font-bold text-center scroll-m-20 border-b tracking-tight first:mt-0">{`Sensor ${sensorType}`}</h1>
       <div ref={componentRef} className="flex flex-col min-h-screen overflow-x-auto">
         <div className="flex-grow overflow-x-auto">
           {error ? (
@@ -96,11 +109,13 @@ const SensorData: React.FC<SensorDataProps> = ({ sensorType, endpoint }) => {
                   <div>
                     <Input
                       placeholder="Search"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
-              <div className="rounded-md border my-3" ref={componentRef}>
+              <div className="rounded-md border my-3 bg-white" ref={componentRef}>
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -111,7 +126,7 @@ const SensorData: React.FC<SensorDataProps> = ({ sensorType, endpoint }) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data.map((row, rowIndex) => (
+                    {filteredData.map((row, rowIndex) => (
                       <TableRow key={rowIndex}>
                         <TableCell>{rowIndex + 1}</TableCell>
                         {Object.values(row).map((cell, cellIndex) => (
