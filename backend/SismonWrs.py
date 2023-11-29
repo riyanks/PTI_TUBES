@@ -39,7 +39,7 @@ def sismon_wrs():
 
         while True:
             page_content = driver.page_source
-            soup = BeautifulSoup(page_content, 'html.parser')
+            soup = BeautifulSoup(page_content, 'lxml')
             table = soup.find("table", {"id": "test"})
             if not table:
                 return jsonify({"error": "Table not found"}), 404
@@ -77,4 +77,4 @@ def sismon_wrs():
 
 
 if __name__ == "__main__":
-    app.run(port=3000, debug=True)
+    app.run(port=3002, debug=True)
