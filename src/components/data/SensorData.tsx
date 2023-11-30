@@ -73,7 +73,11 @@ const SensorData: React.FC<SensorDataProps> = ({ sensorType, endpoint }) => {
 
   return (
     <>
+<<<<<<< HEAD
+      <h1 className="text-4xl p-4 mb-6 font-bold text-center scroll-m-20 border-b tracking-tight first:mt-0">{`Sensor ${sensorType}`}</h1>
+=======
       <h1 className="text-5xl p-4 mb-6 font-bold text-center scroll-m-20 border-b tracking-tight first:mt-0">{`Sensor ${sensorType}`}</h1>
+>>>>>>> 30c3a72436e604383e6441ea8defda27b5c3ec82
       <div ref={componentRef} className="flex flex-col min-h-screen overflow-x-auto">
         <div className="flex-grow overflow-x-auto">
           {error ? (

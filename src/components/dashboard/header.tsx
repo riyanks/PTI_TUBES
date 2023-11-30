@@ -33,8 +33,8 @@ const Header = () => {
                         <Image
                             src="/image/logo-bmkg.png"
                             alt='logobmkg'
-                            width={30}
-                            height={30}
+                            width={50}
+                            height={50}
                         />
                         <span className="font-bold text-md flex">Stasiun Geofisika Padang Panjang</span>
                     </Link>

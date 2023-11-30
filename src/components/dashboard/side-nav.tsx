@@ -21,8 +21,8 @@ const SideNav = () => {
                     <Image
                         src="/image/logo-bmkg.png"
                         alt='logobmkg'
-                        width={30}
-                        height={30}
+                        width={50}
+                        height={50}
                     />
                     <span className="font-extrabold text-sm flex">Stasiun Geofisika Padang Panjang</span>
                 </Link>
